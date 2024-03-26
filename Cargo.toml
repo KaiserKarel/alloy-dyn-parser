@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-alloy-dyn-abi = "0.6.4"
+alloy-dyn-abi = { version = "0.6.4", features = ["eip712"] }
 alloy-json-abi = { version = "0.6.4", features = ["serde_json"] }
 alloy-primitives = "0.6.4"
 base64 = "0.22.0"

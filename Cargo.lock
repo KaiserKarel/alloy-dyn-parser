@@ -58,6 +58,7 @@ dependencies = [
  "alloy-sol-type-parser",
  "alloy-sol-types",
  "const-hex",
+ "derive_more",
  "itoa",
  "serde",
  "serde_json",

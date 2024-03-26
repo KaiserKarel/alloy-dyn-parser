@@ -41,7 +41,6 @@ impl<'a> Parser<'a> {
 
     pub fn parse(&self, log: &Log) -> Result<KeyedEvent, ParsingError> {
         let selector = log.topics.first().unwrap();
-
         let definition = self
             .abi
             .events()
@@ -64,7 +63,6 @@ impl<'a> Parser<'a> {
             .chain(body)
             .map(|(k, v)| {
                 // For now we only support simple types, not structs and such.
-                assert!(k.is_simple_type());
                 (k.name.clone(), dyn_sol_to_json(v))
             })
             .collect();
@@ -91,6 +89,17 @@ fn dyn_sol_to_json(val: DynSolValue) -> Value {
         DynSolValue::Array(a) => Value::Array(a.into_iter().map(dyn_sol_to_json).collect()),
         DynSolValue::FixedArray(a) => Value::Array(a.into_iter().map(dyn_sol_to_json).collect()),
         DynSolValue::Tuple(a) => Value::Array(a.into_iter().map(dyn_sol_to_json).collect()),
+        DynSolValue::CustomStruct {
+            name: _,
+            prop_names,
+            tuple,
+        } => {
+            let map = prop_names
+                .into_iter()
+                .zip(tuple.into_iter().map(dyn_sol_to_json))
+                .collect();
+            Value::Object(map)
+        }
     }
 }
 
@@ -120,6 +129,30 @@ mod tests {
         let parser = Parser::new(&abi);
         for log in logs() {
             parser.parse(&log).unwrap();
+        }
+    }
+
+    mod ibc {
+        use super::*;
+
+        fn logs() -> Vec<Log> {
+            let file = include_str!("../testdata/ibc/logs.json");
+            let response: Vec<Log> = serde_json::from_str(&file).unwrap();
+            response
+        }
+
+        fn abi() -> JsonAbi {
+            let json = include_str!("../testdata/ibc/abi.json");
+            serde_json::from_str(&json).unwrap()
+        }
+
+        #[test]
+        fn ibc_parsing_works() {
+            let abi = abi();
+            let parser = Parser::new(&abi);
+            for log in logs() {
+                parser.parse(&log).unwrap();
+            }
         }
     }
 }
