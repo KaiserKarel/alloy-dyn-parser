@@ -2,8 +2,8 @@
 name = "alloy-dyn-parser"
 version = "0.1.1"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+description = "Dynamically parse events using JSON-ABI."
+license = "MIT"
 
 [dependencies]
 alloy-dyn-abi = { version = "0.6.4", features = ["eip712"] }
