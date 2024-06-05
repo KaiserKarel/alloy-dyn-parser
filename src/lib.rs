@@ -74,7 +74,7 @@ impl<'a> Parser<'a> {
     }
 }
 
-fn dyn_sol_to_json(val: DynSolValue) -> Value {
+pub fn dyn_sol_to_json(val: DynSolValue) -> Value {
     use base64::prelude::*;
 
     match val {
