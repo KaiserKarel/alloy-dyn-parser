@@ -62,7 +62,6 @@ impl<'a> Parser<'a> {
         let values: Map<String, Value> = indexed
             .chain(body)
             .map(|(k, v)| {
-                // For now we only support simple types, not structs and such.
                 (k.name.clone(), dyn_sol_to_json(v))
             })
             .collect();
